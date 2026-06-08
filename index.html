@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conexão Serra — Lages SC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@300;400;500;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800;1,9..40,400;1,9..40,700&display=swap" rel="stylesheet">
+
+
+<style>
+/* ── @property: gradientes animáveis ── */
+@property --g1 { syntax: '<color>'; inherits: false; initial-value: #1e3a1e; }
+@property --g2 { syntax: '<color>'; inherits: false; initial-value: #2d5a2d; }
+@property --gold-a { syntax: '<color>'; inherits: false; initial-value: #b8962e; }
+@property --gold-b { syntax: '<color>'; inherits: false; initial-value: #d4ae48; }
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green:      #1e3a1e;
+  --green-md:   #2d5a2d;
+  --green-lt:   #3d7a3d;
+  --green-soft: #e8f0e8;
+  --gold:       #b8962e;
+  --gold-lt:    #d4ae48;
+  --gold-dim:   rgba(184,150,46,.1);
+  --white:      #ffffff;
+  --off:        #f8f6f2;
+  --ink:        #0f140f;
+  --ink-55:     rgba(15,20,15,.55);
+  --ink-18:     rgba(15,20,15,.12);
+  --ease:       cubic-bezier(.4,0,.2,1);
+  --ease-out:   cubic-bezier(0,0,.2,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+/* ── prefers-reduced-motion: desliga tudo ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ═══ GRAIN ════════════════════════════════════════════════ */
+#grain {
+  position: fixed; inset: 0; z-index: 9990;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  opacity: .032;
+  mix-blend-mode: multiply;
+}
+
+/* ═══ CURSOR ═══════════════════════════════════════════════ */
+#cur {
+  position: fixed; z-index: 9999; pointer-events: none;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold-lt);
+  transform: translate(-50%,-50%);
+  transition: width .2s, height .2s, border-radius .2s, background .2s, opacity .3s;
+  mix-blend-mode: multiply;
+}
+#cur-ring {
+  position: fixed; z-index: 9998; pointer-events: none;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid rgba(184,150,46,.4);
+  transform: translate(-50%,-50%);
+  transition: width .35s var(--ease), height .35s var(--ease),
+              border-radius .35s, border-color .35s, opacity .3s;
+}
+
+body.on-link #cur { width: 48px; height: 48px; background: rgba(184,150,46,.15); mix-blend-mode: normal; }
+body.on-link #cur-ring { opacity: 0; }
+body.on-img #cur { width: 56px; height: 56px; border-radius: 4px; background: rgba(30,58,30,.12); mix-blend-mode: normal; }
+body.on-img #cur-ring { width: 60px; height: 60px; border-color: rgba(30,58,30,.3); }
+
+/* ═══ NAV ══════════════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: 66px; padding: 0 clamp(1.5rem,6vw,8rem);
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .4s, box-shadow .4s, backdrop-filter .4s;
+}
+nav.scrolled {
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 1px 0 var(--ink-18);
+}
+.logo {
+  display: flex; align-items: center; gap: .5rem;
+  font-weight: 700; font-size: .95rem; letter-spacing: -.02em; color: var(--white);
+  transition: color .4s; text-decoration: none;
+}
+nav.scrolled .logo { color: var(--green); }
+.logo-mark {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: linear-gradient(135deg, var(--green-md), var(--green-lt));
+  display: flex; align-items: center; justify-content: center;
+  font-size: .65rem; font-weight: 800; color: var(--gold-lt); letter-spacing: .02em;
+  flex-shrink: 0;
+}
+.nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+.nav-links a {
+  font-size: .8rem; font-weight: 500; color: rgba(255,255,255,.6);
+  text-decoration: none; transition: color .3s;
+}
+nav.scrolled .nav-links a { color: var(--ink-55); }
+.nav-links a:hover { color: var(--white); }
+nav.scrolled .nav-links a:hover { color: var(--green); }
+.nav-cta {
+  font-size: .78rem; font-weight: 700;
+  padding: .48rem 1.1rem; border-radius: 100px;
+  background: linear-gradient(135deg, var(--gold-a), var(--gold-b));
+  color: var(--white); text-decoration: none;
+  box-shadow: 0 2px 12px rgba(184,150,46,.35);
+  transition: --gold-a .4s, --gold-b .4s, transform .15s, box-shadow .2s;
+}
+.nav-cta:hover {
+  --gold-a: #d4ae48; --gold-b: #e8c860;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(184,150,46,.5);
+}
+
+/* ═══ HERO ══════════════════════════════════════════════════ */
+#hero {
+  min-height: 100vh; position: relative; overflow: hidden;
+  display: flex; align-items: center;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&q=80');
+  background-size: cover; background-position: center 30%;
+  animation: heroZoom 12s ease forwards;
+  will-change: transform;
+}
+@keyframes heroZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(105deg, rgba(10,20,10,.92) 0%, rgba(15,30,15,.75) 45%, rgba(15,30,15,.35) 100%),
+    linear-gradient(to top, rgba(10,20,10,.7) 0%, transparent 55%);
+}
+
+/* grain mais forte no hero */
+#hero::after {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .08; mix-blend-mode: screen;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  padding: 120px clamp(1.5rem,6vw,8rem) 80px;
+  max-width: min(640px, 55vw);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  border: 1px solid rgba(212,174,72,.3);
+  background: rgba(212,174,72,.08);
+  backdrop-filter: blur(8px);
+  padding: .36rem .9rem; border-radius: 100px;
+  font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gold-lt); margin-bottom: 2rem;
+  opacity: 0; animation: fadeUp .5s var(--ease) .3s both;
+}
+.badge-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--gold-lt);
+  box-shadow: 0 0 6px var(--gold-lt);
+  animation: blink 2.5s ease infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+/* TIPOGRAFIA VARIÁVEL — font-weight animado via scroll-driven */
+.hero-h1 {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: clamp(2.8rem, 6.5vw, 5.8rem);
+  line-height: .93; letter-spacing: clamp(-.03em, -.01em + -.3vw, -.01em);
+  color: var(--white);
+  font-weight: 300; /* começa fino */
+  opacity: 0; animation: fadeUp .8s var(--ease) .45s both;
+}
+
+.hero-h1 em {
+  font-family: 'DM Sans', sans-serif;
+  font-style: italic; font-weight: 800;
+  background: linear-gradient(90deg, var(--gold-lt), #e8c860);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-p {
+  font-size: clamp(.92rem, 1.5vw, 1.08rem); font-weight: 300; line-height: 1.82;
+  color: rgba(255,255,255,.62); max-width: 440px; margin-top: 1.5rem;
+  opacity: 0; animation: fadeUp .65s var(--ease) .65s both;
+}
+.hero-btns {
+  display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 2.2rem;
+  opacity: 0; animation: fadeUp .55s var(--ease) .82s both;
+}
+.btn-gold {
+  font-size: .86rem; font-weight: 700;
+  padding: .8rem 1.75rem; border-radius: 100px;
+  background: linear-gradient(135deg, var(--gold-a), var(--gold-b));
+  color: var(--white); text-decoration: none; border: none; cursor: none;
+  box-shadow: 0 4px 20px rgba(184,150,46,.4);
+  transition: --gold-a .3s, --gold-b .3s, transform .15s, box-shadow .2s;
+}
+.btn-gold:hover { --gold-a:#d4ae48; --gold-b:#e8c860; transform:translateY(-2px); box-shadow:0 8px 28px rgba(184,150,46,.55); }
+.btn-ghost-white {
+  font-size: .86rem; font-weight: 500;
+  padding: .8rem 1.75rem; border-radius: 100px;
+  background: rgba(255,255,255,.08); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.22); color: var(--white);
+  text-decoration: none; cursor: none;
+  transition: background .2s, border-color .2s, transform .15s;
+}
+.btn-ghost-white:hover { background:rgba(255,255,255,.16); border-color:rgba(255,255,255,.45); transform:translateY(-1px); }
+
+/* scroll pill */
+.hero-scroll {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  opacity: 0; animation: fadeUp .4s var(--ease) 1.2s both; z-index: 3;
+}
+.scroll-pill {
+  width: 22px; height: 36px; border-radius: 100px;
+  border: 1.5px solid rgba(255,255,255,.2);
+  display: flex; justify-content: center; padding-top: 5px;
+}
+.scroll-dot {
+  width: 3px; height: 7px; border-radius: 100px;
+  background: var(--gold-lt); animation: sdrop 2s ease infinite;
+}
+@keyframes sdrop { 0%{transform:translateY(0);opacity:1} 80%{transform:translateY(10px);opacity:0} 100%{transform:translateY(0);opacity:0} }
+.scroll-lbl { font-size: .58rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.28); }
+
+/* ═══ STATS ══════════════════════════════════════════════════ */
+#stats {
+  background: var(--green);
+  display: grid; grid-template-columns: repeat(3,1fr);
+  position: relative; overflow: hidden;
+}
+#stats::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-lt), var(--gold));
+}
+.stat-item {
+  padding: 3rem clamp(1.5rem,3vw,3rem);
+  border-right: 1px solid rgba(255,255,255,.07);
+}
+.stat-item:last-child { border-right: none; }
+.stat-n {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: clamp(2.5rem,4vw,3.5rem);
+  font-weight: 700; line-height: 1; color: var(--white);
+  letter-spacing: -.03em;
+}
+.stat-n em { font-style: normal; font-size: .6em; color: var(--gold-lt); }
+.stat-l { font-size: .8rem; font-weight: 300; color: rgba(255,255,255,.4); margin-top: .5rem; line-height: 1.5; }
+
+/* ═══ NARRATIVA ══════════════════════════════════════════════ */
+#narrativa {
+  padding: 7rem clamp(1.5rem,6vw,8rem);
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6vw; align-items: center;
+  background: var(--off);
+}
+.narr-text .big-q {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: clamp(2rem,4vw,3.2rem);
+  font-weight: 800; font-style: normal; line-height: 1.1;
+  letter-spacing: -.02em; color: var(--green);
+  margin-bottom: 1.5rem;
+}
+.narr-text p {
+  font-size: clamp(.9rem,1.4vw,1rem); font-weight: 300; line-height: 1.9;
+  color: var(--ink-55); max-width: 460px;
+}
+.narr-text p + p { margin-top: 1rem; }
+.narr-text .narr-cta {
+  display: inline-flex; align-items: center; gap: .5rem;
+  margin-top: 2rem; font-size: .82rem; font-weight: 600; color: var(--gold);
+  text-decoration: none; cursor: none;
+  transition: gap .2s;
+}
+.narr-text .narr-cta:hover { gap: .8rem; }
+.narr-visual {
+  position: relative; border-radius: 16px; overflow: hidden;
+  aspect-ratio: 3/4;
+}
+.narr-visual img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  /* clip-path reveal via scroll-driven */
+  clip-path: inset(0 100% 0 0);
+  animation: revealImg linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 60%;
+}
+@keyframes revealImg {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+.narr-visual-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,25,15,.6) 0%, transparent 50%);
+}
+.narr-visual-tag {
+  position: absolute; bottom: 1.5rem; left: 1.5rem;
+  background: rgba(15,25,15,.7); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px; padding: .7rem 1rem;
+  font-size: .72rem; font-weight: 500; color: rgba(255,255,255,.75);
+  display: flex; align-items: center; gap: .5rem;
+}
+.narr-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-lt); }
+
+/* ═══ FEATURES ═══════════════════════════════════════════════ */
+#features {
+  padding: 7rem clamp(1.5rem,6vw,8rem);
+}
+.feat-header {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4vw; align-items: end; margin-bottom: 3.5rem;
+}
+.feat-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1.5rem;
+}
+.feat {
+  background: var(--white); border-radius: 12px;
+  padding: 1.8rem 1.6rem;
+  border: 1px solid var(--ink-18);
+  position: relative; overflow: hidden;
+  transition: box-shadow .3s var(--ease), transform .3s var(--ease), border-color .3s;
+  cursor: none;
+}
+.feat::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--green-md), var(--gold));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .4s var(--ease);
+}
+.feat:hover::before { transform: scaleX(1); }
+.feat:hover { box-shadow: 0 8px 32px rgba(30,58,30,.1); transform: translateY(-4px); border-color: rgba(30,58,30,.15); }
+.feat-ico {
+  width: 40px; height: 40px; border-radius: 9px;
+  background: var(--green-soft); border: 1px solid rgba(30,58,30,.08);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.1rem; color: var(--green-md);
+}
+.feat-ico svg { width: 18px; height: 18px; stroke-width: 1.75; }
+.feat-title { font-size: .93rem; font-weight: 700; color: var(--green); margin-bottom: .4rem; letter-spacing: -.01em; }
+.feat-desc { font-size: .8rem; font-weight: 300; line-height: 1.72; color: var(--ink-55); }
+
+/* ═══ COMO ═══════════════════════════════════════════════════ */
+#como {
+  padding: 7rem clamp(1.5rem,6vw,8rem);
+  background: linear-gradient(135deg, var(--g1) 0%, var(--g2) 100%);
+  position: relative; overflow: hidden;
+  transition: --g1 .4s, --g2 .4s;
+}
+#como:hover { --g1: #1a3a1a; --g2: #355a35; }
+#como .geo-circle {
+  position: absolute; border-radius: 50%; pointer-events: none;
+}
+#como .geo1 { width:500px;height:500px;top:-200px;right:-150px; background:radial-gradient(circle,rgba(212,174,72,.08),transparent 70%); }
+#como .geo2 { width:300px;height:300px;bottom:-100px;left:-80px; background:radial-gradient(circle,rgba(255,255,255,.04),transparent 70%); }
+
+.steps-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1.5rem; margin-top: 3.5rem;
+  position: relative;
+}
+/* linha conectora — removida do ::before, colocada via elemento dedicado no HTML */
+.cstep {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 2.2rem 1.8rem;
+  position: relative; z-index: 1;
+  transition: background .3s, border-color .3s, transform .3s;
+  cursor: none;
+}
+.cstep:hover { background: rgba(255,255,255,.09); border-color: rgba(212,174,72,.3); transform: translateY(-4px); }
+.cs-num {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 2.8rem; font-weight: 300; font-style: italic;
+  color: rgba(255,255,255,.07); line-height: 1; margin-bottom: .8rem;
+  transition: color .3s;
+}
+.cstep:hover .cs-num { color: rgba(212,174,72,.2); }
+.cs-ico {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: rgba(212,174,72,.1); border: 1px solid rgba(212,174,72,.2);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem; color: var(--gold-lt);
+}
+.cs-ico svg { width: 20px; height: 20px; stroke-width: 1.75; }
+.cs-title { font-size: .95rem; font-weight: 700; color: var(--white); margin-bottom: .5rem; letter-spacing: -.01em; }
+.cs-desc { font-size: .8rem; font-weight: 300; line-height: 1.75; color: rgba(255,255,255,.42); }
+
+/* ═══ PARA QUEM ══════════════════════════════════════════════ */
+#para-quem {
+  padding: 7rem clamp(1.5rem,6vw,8rem);
+  background: var(--off);
+}
+.pq-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1.5rem; margin-top: 3.5rem;
+}
+/* cada público tem acento diferente */
+.pq { border-radius: 12px; padding: 2rem 1.8rem; border: 1.5px solid var(--ink-18); position: relative; overflow: hidden; transition: transform .25s, box-shadow .25s, border-color .25s; cursor: none; }
+.pq:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(30,58,30,.1); }
+.pq::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; transform: scaleX(0); transform-origin: left; transition: transform .4s var(--ease); }
+.pq:hover::after { transform: scaleX(1); }
+
+/* jovens — verde */
+.pq.pq-jovens { background: white; }
+.pq.pq-jovens:hover { border-color: rgba(30,58,30,.3); }
+.pq.pq-jovens::after { background: linear-gradient(90deg, var(--green-md), var(--green-lt)); }
+.pq.pq-jovens .pq-ico-wrap { background: var(--green-soft); color: var(--green-md); }
+.pq.pq-jovens .pq-title { color: var(--green); }
+
+/* empresas — dourado */
+.pq.pq-emp { background: white; }
+.pq.pq-emp:hover { border-color: rgba(184,150,46,.4); }
+.pq.pq-emp::after { background: linear-gradient(90deg, var(--gold), var(--gold-lt)); }
+.pq.pq-emp .pq-ico-wrap { background: var(--gold-dim); color: var(--gold); }
+.pq.pq-emp .pq-title { color: #7a6010; }
+
+/* instituições — neutro escuro */
+.pq.pq-inst { background: var(--green); }
+.pq.pq-inst:hover { border-color: rgba(212,174,72,.3); }
+.pq.pq-inst::after { background: linear-gradient(90deg, var(--gold), #e8c860); }
+.pq.pq-inst .pq-ico-wrap { background: rgba(212,174,72,.12); color: var(--gold-lt); }
+.pq.pq-inst .pq-title { color: var(--white); }
+.pq.pq-inst .pq-desc { color: rgba(255,255,255,.45); }
+.pq.pq-inst .pq-list li { color: rgba(255,255,255,.6); }
+.pq.pq-inst .pq-list li::before { background: var(--gold); }
+
+.pq-ico-wrap { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.2rem; }
+.pq-ico-wrap svg { width: 22px; height: 22px; stroke-width: 1.75; }
+.pq-title { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; letter-spacing: -.01em; }
+.pq-desc { font-size: .78rem; font-weight: 400; line-height: 1.6; color: var(--ink-55); margin-bottom: .9rem; }
+.pq-list { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+.pq-list li { font-size: .8rem; font-weight: 300; color: var(--ink-55); display: flex; align-items: center; gap: .55rem; line-height: 1.45; }
+.pq-list li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; background: var(--green-lt); }
+
+/* ═══ DEPOIMENTOS ════════════════════════════════════════════ */
+#depoimentos {
+  padding: 7rem clamp(1.5rem,6vw,8rem);
+  background: var(--white);
+}
+.dep-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1.5rem; margin-top: 3.5rem;
+}
+.dep-card {
+  background: var(--off); border-radius: 12px;
+  padding: 1.8rem; border: 1px solid var(--ink-18);
+  position: relative; transition: box-shadow .25s, transform .25s;
+}
+.dep-card:hover { box-shadow: 0 8px 28px rgba(30,58,30,.08); transform: translateY(-2px); }
+.dep-quote {
+  font-family: 'Cabinet Grotesk', sans-serif; font-style: italic; font-weight: 300;
+  font-size: 1rem; line-height: 1.65; color: var(--green);
+  margin-bottom: 1.4rem;
+}
+.dep-author { display: flex; align-items: center; gap: .8rem; }
+.dep-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-soft), var(--gold-dim));
+  overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 1rem; font-weight: 700;
+  color: var(--green-md);
+}
+.dep-name { font-size: .82rem; font-weight: 700; color: var(--green); letter-spacing: -.01em; }
+.dep-role { font-size: .72rem; font-weight: 300; color: var(--ink-55); margin-top: .1rem; }
+.dep-mark {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 3rem; font-weight: 700; font-style: italic;
+  color: rgba(30,58,30,.06); line-height: 1;
+}
+
+/* ═══ DOC ═════════════════════════════════════════════════════ */
+#doc {
+  padding: 7rem clamp(1.5rem,6vw,8rem);
+  background: var(--off); position: relative; overflow: hidden;
+}
+.doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; align-items: start; }
+.ep-list { margin-top: 2rem; border-radius: 12px; overflow: hidden; border: 1px solid var(--ink-18); }
+.ep {
+  display: flex; align-items: center; gap: 1.1rem;
+  padding: 1rem 1.2rem; border-bottom: 1px solid var(--ink-18);
+  background: var(--white); transition: background .2s, padding-left .25s; cursor: none;
+}
+.ep:last-child { border-bottom: none; }
+.ep:hover { background: var(--green-soft); padding-left: 1.5rem; }
+.ep-n {
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 1.3rem; font-weight: 300; font-style: italic;
+  color: rgba(30,58,30,.15); flex-shrink: 0; width: 2.2rem; line-height: 1;
+  transition: color .25s;
+}
+.ep:hover .ep-n { color: var(--gold); }
+.ep-t { font-size: .88rem; font-weight: 600; color: var(--green); letter-spacing: -.01em; }
+.ep-s { font-size: .73rem; font-weight: 300; color: var(--ink-55); margin-top: .1rem; }
+.ep-arr { margin-left: auto; color: var(--ink-18); transition: transform .2s, color .2s; display: flex; }
+.ep-arr svg { width: 14px; height: 14px; }
+.ep:hover .ep-arr { transform: translateX(3px); color: var(--gold); }
+
+.doc-card {
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-md) 100%);
+  border-radius: 16px; padding: 2.5rem;
+  position: sticky; top: 90px;
+}
+.dc-lbl { font-size: .65rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 1.2rem; }
+.dc-q { font-family: 'Cabinet Grotesk', sans-serif; font-size: 1.35rem; font-weight: 700; line-height: 1.3; color: var(--white); margin-bottom: 1.8rem; }
+.dc-q em { font-family: 'DM Sans', sans-serif; font-style: italic; font-weight: 700; background: linear-gradient(90deg,var(--gold-lt),#e8c860); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.dc-channels { display: flex; flex-direction: column; gap: .5rem; }
+.dch {
+  display: flex; align-items: center; gap: .8rem;
+  padding: .75rem 1rem; border-radius: 8px;
+  background: rgba(255,255,255,.07);
+  font-size: .82rem; font-weight: 500; color: rgba(255,255,255,.8);
+  transition: background .2s; cursor: none;
+}
+.dch:hover { background: rgba(255,255,255,.12); }
+.dch-ico { color: var(--gold-lt); display: flex; flex-shrink: 0; }
+.dch-ico svg { width: 16px; height: 16px; stroke-width: 1.75; }
+.dch-tag { margin-left: auto; font-size: .62rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.28); }
+
+/* ═══ CTA ═════════════════════════════════════════════════════ */
+#cta {
+  min-height: 540px; position: relative; overflow: hidden;
+  display: flex; align-items: center;
+}
+.cta-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1920&q=80');
+  background-size: cover; background-position: center 40%;
+}
+.cta-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(10,20,10,.94) 0%, rgba(20,45,20,.9) 50%, rgba(10,20,10,.88) 100%);
+}
+.cta-inner {
+  position: relative; z-index: 2;
+  padding: 7rem clamp(1.5rem,6vw,8rem);
+  width: 100%;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6vw; align-items: center;
+}
+.cta-tag { font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(212,174,72,.6); display: block; margin-bottom: 1rem; }
+.cta-h {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: clamp(2rem,4.5vw,3.5rem);
+  font-weight: 700; line-height: 1.05; letter-spacing: -.02em; color: var(--white);
+}
+.cta-h em { font-family: 'DM Sans', sans-serif; font-style: italic; font-weight: 700; background: linear-gradient(90deg,var(--gold-lt),#e8c860); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.cta-p { font-size: .9rem; font-weight: 300; line-height: 1.82; color: rgba(255,255,255,.5); margin-top: 1.2rem; max-width: 360px; }
+.email-box {
+  background: rgba(255,255,255,.06); backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 16px; padding: 2rem;
+}
+.eb-lbl { font-size: .65rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: .8rem; }
+.eb-title { font-size: .95rem; font-weight: 700; color: var(--white); margin-bottom: .4rem; letter-spacing: -.01em; }
+.eb-sub { font-size: .78rem; font-weight: 300; line-height: 1.6; color: rgba(255,255,255,.45); margin-bottom: 1.4rem; }
+.eb-row { display: flex; gap: .5rem; }
+.eb-row input {
+  flex: 1; font-family: 'DM Sans', sans-serif; font-size: .85rem;
+  padding: .75rem 1rem; border-radius: 8px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+  color: var(--white); outline: none;
+  transition: background .2s, border-color .2s;
+}
+.eb-row input::placeholder { color: rgba(255,255,255,.28); }
+.eb-row input:focus { background: rgba(255,255,255,.16); border-color: rgba(212,174,72,.5); }
+.eb-row button {
+  font-family: 'DM Sans', sans-serif; font-size: .8rem; font-weight: 700;
+  padding: .75rem 1.2rem; border-radius: 8px; white-space: nowrap;
+  background: linear-gradient(135deg, var(--gold-a), var(--gold-b));
+  color: var(--white); border: none; cursor: none;
+  box-shadow: 0 4px 16px rgba(184,150,46,.4);
+  transition: --gold-a .3s, --gold-b .3s, transform .15s;
+}
+.eb-row button:hover { --gold-a:#d4ae48; --gold-b:#e8c860; transform: translateY(-1px); }
+.eb-note { font-size: .68rem; color: rgba(255,255,255,.24); margin-top: .8rem; }
+
+/* ═══ FOOTER ══════════════════════════════════════════════════ */
+footer {
+  padding: 2.5rem clamp(1.5rem,6vw,8rem);
+  background: var(--green);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.footer-logo { display: flex; align-items: center; gap: .5rem; font-size: .9rem; font-weight: 700; color: var(--white); text-decoration: none; letter-spacing: -.01em; }
+.footer-info { font-size: .7rem; color: rgba(255,255,255,.28); }
+.footer-links { display: flex; gap: 1.5rem; list-style: none; }
+.footer-links a { font-size: .7rem; color: rgba(255,255,255,.28); text-decoration: none; transition: color .2s; }
+.footer-links a:hover { color: rgba(255,255,255,.7); }
+
+/* ═══ SHARED ══════════════════════════════════════════════════ */
+.s-tag { font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: .8rem; }
+.s-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 700; line-height: 1.1; letter-spacing: -.02em; color: var(--green); }
+.s-title em { font-family: 'DM Sans', sans-serif; font-style: italic; font-weight: 700; color: var(--gold); }
+.s-body { font-size: .88rem; font-weight: 300; line-height: 1.8; color: var(--ink-55); max-width: 400px; margin-top: .8rem; }
+.s-title-white { color: var(--white); }
+.s-tag-dim { color: rgba(212,174,72,.6); }
+
+/* reveal */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .65s var(--ease), transform .65s var(--ease); }
+.reveal.shown { opacity: 1; transform: none; }
+.rd1{transition-delay:.08s} .rd2{transition-delay:.16s} .rd3{transition-delay:.24s}
+.rd4{transition-delay:.32s} .rd5{transition-delay:.4s}  .rd6{transition-delay:.48s}
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+/* ═══ RESPONSIVE ══════════════════════════════════════════════ */
+@media(max-width:900px){
+  #narrativa,#como .como-head,.feat-header,.doc-grid,.cta-inner { grid-template-columns: 1fr; }
+  #stats { grid-template-columns: 1fr; }
+  .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .feat-grid,.steps-grid,.pq-grid,.dep-grid { grid-template-columns: 1fr 1fr; }
+  .steps-grid::before { display: none; }
+  .narr-visual { display: none; }
+  .nav-links { display: none; }
+  .doc-card { position: static; }
+}
+@media(max-width:560px){
+  .feat-grid,.steps-grid,.pq-grid,.dep-grid { grid-template-columns: 1fr; }
+  .eb-row { flex-direction: column; }
+  footer { flex-direction: column; align-items: flex-start; }
+}
+</style>
+
+<style>
+/* ── MAP TILE FILTER ── */
+#cs-map .leaflet-tile-pane {
+  filter: saturate(0.15) brightness(0.55) sepia(0.4) hue-rotate(80deg);
+}
+/* Pulse animation for markers */
+@keyframes markerPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255,255,255,.5); }
+  70%  { box-shadow: 0 0 0 12px rgba(255,255,255,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
+.cs-marker-inner { animation: markerPulse 2.5s ease infinite; }
+/* Leaflet zoom buttons dark style */
+.leaflet-control-zoom a {
+  background: rgba(10,18,10,.9) !important;
+  color: #d4ae48 !important;
+  border-color: rgba(255,255,255,.1) !important;
+  font-weight: 700;
+}
+.leaflet-control-zoom a:hover {
+  background: rgba(30,58,30,.95) !important;
+}
+/* Attribution */
+.leaflet-control-attribution {
+  background: rgba(10,18,10,.7) !important;
+  color: rgba(255,255,255,.2) !important;
+  font-size: 9px !important;
+}
+.leaflet-control-attribution a { color: rgba(255,255,255,.3) !important; }
+</style>
+</head>
+<body>
+
+<!-- GRAIN -->
+<div id="grain" aria-hidden="true"></div>
+
+<!-- CURSOR -->
+<div id="cur" aria-hidden="true"></div>
+<div id="cur-ring" aria-hidden="true"></div>
+
+
+<!-- NAV -->
+<nav id="nav" role="navigation" aria-label="Navegação principal">
+  <a href="#" class="logo" aria-label="Conexão Serra — início">
+    <div class="logo-mark" aria-hidden="true">CS</div>
+    Conexão Serra
+  </a>
+  <ul class="nav-links">
+    <li><a href="#sobre">O Projeto</a></li>
+    <li><a href="#features">Plataforma</a></li>
+    <li><a href="#como">Como funciona</a></li>
+    <li><a href="#doc">Documentário</a></li>
+    <li><a href="#cta" class="nav-cta">Entrar na lista</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" aria-label="Seção principal">
+  <div class="hero-bg" role="img" aria-label="Jovens estudantes em contexto universitário"></div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><div class="badge-dot" aria-hidden="true"></div>Lages · Serra Catarinense · SC</div>
+    <h1 class="hero-h1">Ficar em Lages<br>tem que ser uma<br><em>escolha real.</em></h1>
+    <p class="hero-p">Conexão Serra conecta jovens talentos, universidades e empresas — construindo as pontes que faltavam para quem quer crescer aqui.</p>
+    <div class="hero-btns">
+      <a href="#cta" class="btn-gold">Quero participar</a>
+      <a href="#narrativa" class="btn-ghost-white">Conhecer o projeto</a>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <div class="scroll-pill"><div class="scroll-dot"></div></div>
+    <span class="scroll-lbl">Explorar</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats" aria-label="Dados sobre o projeto">
+  <div class="stat-item reveal">
+    <div class="stat-n"><span class="count" data-target="47">0</span><em>%</em></div>
+    <div class="stat-l">dos formandos deixam Lages nos primeiros dois anos</div>
+  </div>
+  <div class="stat-item reveal rd1">
+    <div class="stat-n"><span class="count" data-target="3">0</span></div>
+    <div class="stat-l">universidades formando talentos anualmente em Lages</div>
+  </div>
+  <div class="stat-item reveal rd2">
+    <div class="stat-n"><span class="count" data-target="1">0</span></div>
+    <div class="stat-l">plataforma conectando todo esse ecossistema — em breve</div>
+  </div>
+</div>
+
+<!-- NARRATIVA -->
+<section id="narrativa" aria-labelledby="narr-heading">
+  <div class="narr-text">
+    <h2 class="big-q reveal" id="narr-heading">Você já pensou<br>em ir embora?</h2>
+    <p class="reveal rd1">Se a resposta veio rápido, você não está sozinho. Quase metade dos jovens que se formam em Lages deixam a cidade nos primeiros dois anos.</p>
+    <p class="reveal rd2">Não por falta de amor pelo lugar — mas por falta de ponte entre o que sabem fazer e quem precisa deles aqui.</p>
+    <p class="reveal rd3"><strong style="color:var(--green);font-weight:600">O Conexão Serra é essa ponte.</strong></p>
+    <a href="#features" class="narr-cta reveal rd4">
+      Conhecer a plataforma
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="narr-visual reveal rd2">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=75" alt="Jovens estudantes colaborando em projeto" loading="lazy">
+    <div class="narr-visual-overlay" aria-hidden="true"></div>
+    <div class="narr-visual-tag">
+      <div class="narr-tag-dot" aria-hidden="true"></div>
+      Jovens de Lages · Serra Catarinense
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" aria-labelledby="feat-heading">
+  <div class="feat-header">
+    <div>
+      <span class="s-tag reveal">A Plataforma</span>
+      <h2 class="s-title reveal" id="feat-heading">Uma plataforma.<br><em>Muitas pontes.</em></h2>
+    </div>
+    <p class="s-body reveal">Conexão Serra nasce de uma investigação jornalística e se transforma em solução concreta para o ecossistema de Lages.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat reveal rd1"><div class="feat-ico"><i data-lucide="megaphone"></i></div><div class="feat-title">Vagas locais</div><div class="feat-desc">Empresas de Lages publicam oportunidades direto para jovens que querem ficar na cidade.</div></div>
+    <div class="feat reveal rd2"><div class="feat-ico"><i data-lucide="map"></i></div><div class="feat-title">Mapa de talentos</div><div class="feat-desc">Estudantes criam perfil e ficam visíveis para o mercado regional da Serra.</div></div>
+    <div class="feat reveal rd3"><div class="feat-ico"><i data-lucide="graduation-cap"></i></div><div class="feat-title">Parceria universitária</div><div class="feat-desc">UNIPLAC, UDESC e IFSC integradas — conectando academia ao mercado local.</div></div>
+    <div class="feat reveal rd4"><div class="feat-ico"><i data-lucide="newspaper"></i></div><div class="feat-title">Conteúdo jornalístico</div><div class="feat-desc">Reportagens e dados sobre o mercado de Lages — informação para tomar decisões.</div></div>
+    <div class="feat reveal rd5"><div class="feat-ico"><i data-lucide="mic"></i></div><div class="feat-title">Podcast e vídeo</div><div class="feat-desc">Histórias de quem ficou, voltou e está construindo carreira aqui.</div></div>
+    <div class="feat reveal rd6"><div class="feat-ico"><i data-lucide="handshake"></i></div><div class="feat-title">Mentorias locais</div><div class="feat-desc">Profissionais estabelecidos em Lages compartilham experiência com quem está começando.</div></div>
+  </div>
+</section>
+
+<!-- COMO -->
+<section id="como" aria-labelledby="como-heading">
+  <div class="geo-circle geo1" aria-hidden="true"></div>
+  <div class="geo-circle geo2" aria-hidden="true"></div>
+  <div class="como-head" style="display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:end;margin-bottom:0">
+    <div>
+      <span class="s-tag s-tag-dim reveal">Como funciona</span>
+      <h2 class="s-title s-title-white reveal" id="como-heading">Simples de entrar.<br><em>Fácil de crescer.</em></h2>
+    </div>
+    <p class="s-body reveal" style="color:rgba(255,255,255,.42)">Três passos para conectar seu talento ao ecossistema de Lages.</p>
+  </div>
+  <div class="steps-grid">
+    <div class="cstep reveal rd1">
+      <div class="cs-num">01</div>
+      <div class="cs-ico"><i data-lucide="user-plus"></i></div>
+      <div class="cs-title">Cria seu perfil</div>
+      <div class="cs-desc">Estudante, recém-formado ou empresa — cadastro em minutos, sem burocracia.</div>
+    </div>
+    <div class="cstep reveal rd2">
+      <div class="cs-num">02</div>
+      <div class="cs-ico"><i data-lucide="search"></i></div>
+      <div class="cs-title">Explora oportunidades</div>
+      <div class="cs-desc">Vagas, estágios, mentorias e conteúdo — tudo filtrado para o ecossistema de Lages.</div>
+    </div>
+    <div class="cstep reveal rd3">
+      <div class="cs-num">03</div>
+      <div class="cs-ico"><i data-lucide="link-2"></i></div>
+      <div class="cs-title">A conexão acontece</div>
+      <div class="cs-desc">Empresas encontram você. Você encontra onde crescer. Lages ganha um talento a mais.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PARA QUEM -->
+<section id="para-quem" aria-labelledby="pq-heading">
+  <span class="s-tag reveal">Para quem é</span>
+  <h2 class="s-title reveal" id="pq-heading">Para quem acredita<br><em>em Lages.</em></h2>
+  <div class="pq-grid">
+    <div class="pq pq-jovens reveal rd1">
+      <div class="pq-ico-wrap"><i data-lucide="book-open"></i></div>
+      <div class="pq-title">Jovens e estudantes</div>
+      <div class="pq-desc">Quem está formando ou já formado e quer construir carreira aqui.</div>
+      <ul class="pq-list">
+        <li>Estudantes do Ensino Médio</li>
+        <li>Universitários de Lages</li>
+        <li>Recém-formados</li>
+        <li>Quem quer ficar — ou voltar</li>
+      </ul>
+    </div>
+    <div class="pq pq-emp reveal rd2">
+      <div class="pq-ico-wrap"><i data-lucide="briefcase"></i></div>
+      <div class="pq-title">Empresas e mercado</div>
+      <div class="pq-desc">Quem contrata e investe no desenvolvimento regional.</div>
+      <ul class="pq-list">
+        <li>Empresas regionais de Lages</li>
+        <li>Startups e negócios locais</li>
+        <li>Quem quer contratar talentos</li>
+        <li>Quem investe no futuro da Serra</li>
+      </ul>
+    </div>
+    <div class="pq pq-inst reveal rd3">
+      <div class="pq-ico-wrap"><i data-lucide="landmark"></i></div>
+      <div class="pq-title">Instituições</div>
+      <div class="pq-desc">Quem forma, regula e desenvolve o ecossistema local.</div>
+      <ul class="pq-list">
+        <li>Universidades e faculdades</li>
+        <li>Institutos técnicos</li>
+        <li>Poder público municipal</li>
+        <li>Entidades de desenvolvimento</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section id="depoimentos" aria-labelledby="dep-heading">
+  <span class="s-tag reveal">Vozes de Lages</span>
+  <h2 class="s-title reveal" id="dep-heading">Quem já<br><em>decidiu ficar.</em></h2>
+  <div class="dep-grid">
+    <div class="dep-card reveal rd1">
+      <div class="dep-mark">"</div>
+      <div class="dep-quote">"Sempre pensei em ir pra Florianópolis. O que me fez ficar foi perceber que aqui eu tinha espaço para crescer mais rápido do que lá."</div>
+      <div class="dep-author">
+        <div class="dep-avatar">MR</div>
+        <div>
+          <div class="dep-name">Marina Rodrigues</div>
+          <div class="dep-role">Jornalista · UNIPLAC 2022 · Lages</div>
+        </div>
+      </div>
+    </div>
+    <div class="dep-card reveal rd2">
+      <div class="dep-mark">"</div>
+      <div class="dep-quote">"A Serra tem algo que as grandes cidades não têm: qualidade de vida real. Faltava só alguém conectar os pontos."</div>
+      <div class="dep-author">
+        <div class="dep-avatar">PC</div>
+        <div>
+          <div class="dep-name">Pedro Campos</div>
+          <div class="dep-role">Empreendedor · UDESC · Lages</div>
+        </div>
+      </div>
+    </div>
+    <div class="dep-card reveal rd3">
+      <div class="dep-mark">"</div>
+      <div class="dep-quote">"Voltei de Porto Alegre dois anos depois de me formar. Não me arrependo. Fiz mais aqui do que teria feito lá."</div>
+      <div class="dep-author">
+        <div class="dep-avatar">AL</div>
+        <div>
+          <div class="dep-name">Ana Lima</div>
+          <div class="dep-role">Gestora · IFSC · Lages</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCUMENTÁRIO -->
+<section id="doc" aria-labelledby="doc-heading">
+  <div class="doc-grid">
+    <div>
+      <span class="s-tag reveal">O Documentário</span>
+      <h2 class="s-title reveal" id="doc-heading">Ficar ou Partir?<br><em>A história por trás.</em></h2>
+      <p class="s-body reveal">O Conexão Serra nasceu de uma investigação jornalística. O documentário em 5 capítulos conta o êxodo dos jovens de Lages — e propõe o começo de uma solução.</p>
+      <div class="ep-list reveal">
+        <div class="ep"><div class="ep-n">01</div><div><div class="ep-t">A cidade que forma</div><div class="ep-s">História, universidades e ingresso</div></div><div class="ep-arr"><i data-lucide="arrow-right"></i></div></div>
+        <div class="ep"><div class="ep-n">02</div><div><div class="ep-t">O momento da escolha</div><div class="ep-s">Entrevistas com acadêmicos</div></div><div class="ep-arr"><i data-lucide="arrow-right"></i></div></div>
+        <div class="ep"><div class="ep-n">03</div><div><div class="ep-t">Os que partiram</div><div class="ep-s">Relatos de quem foi embora</div></div><div class="ep-arr"><i data-lucide="arrow-right"></i></div></div>
+        <div class="ep"><div class="ep-n">04</div><div><div class="ep-t">Os que ficaram</div><div class="ep-s">Carreiras construídas aqui</div></div><div class="ep-arr"><i data-lucide="arrow-right"></i></div></div>
+        <div class="ep"><div class="ep-n">05</div><div><div class="ep-t">O futuro</div><div class="ep-s">Especialistas, empresários, soluções</div></div><div class="ep-arr"><i data-lucide="arrow-right"></i></div></div>
+      </div>
+    </div>
+    <div class="doc-card reveal rd2">
+      <div class="dc-lbl">Distribuição do conteúdo</div>
+      <div class="dc-q">Uma história em <em>múltiplos formatos</em> — onde os jovens estão.</div>
+      <div class="dc-channels">
+        <div class="dch"><span class="dch-ico"><i data-lucide="newspaper"></i></span>Portal Digital<span class="dch-tag">Reportagens</span></div>
+        <div class="dch"><span class="dch-ico"><i data-lucide="mic-2"></i></span>Podcast<span class="dch-tag">Histórias</span></div>
+        <div class="dch"><span class="dch-ico"><i data-lucide="smartphone"></i></span>Redes Sociais<span class="dch-tag">Vídeos curtos</span></div>
+        <div class="dch"><span class="dch-ico"><i data-lucide="film"></i></span>Documentário<span class="dch-tag">5 capítulos</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+
+<!-- ═══ MAPA ═══════════════════════════════════════════════ -->
+<section id="mapa" style="padding:7rem 0;background:var(--green);position:relative;overflow:hidden">
+  <div style="padding:0 clamp(1.5rem,6vw,8rem);margin-bottom:3rem">
+    <span class="s-tag s-tag-dim reveal" style="color:rgba(212,174,72,.6)">Ecossistema</span>
+    <h2 class="s-title s-title-white reveal">Lages no mapa.<br><em>As pontes já existem.</em></h2>
+    <p class="s-body reveal" style="color:rgba(255,255,255,.42);margin-top:.8rem">Clique em cada ponto para conhecer os centros que formam, conectam e desenvolvem talentos na Serra.</p>
+  </div>
+
+  <div id="map-wrap" style="position:relative;width:100%;height:580px;background:#1a2e1a">
+
+    <!-- Leaflet map -->
+    <div id="cs-map" style="width:100%;height:100%;z-index:1"></div>
+
+    <!-- Side panel -->
+    <div id="map-panel" style="
+      position:absolute;top:0;right:0;width:340px;height:100%;
+      background:rgba(10,18,10,.92);backdrop-filter:blur(20px);
+      border-left:1px solid rgba(255,255,255,.08);
+      z-index:10;display:flex;flex-direction:column;
+      transform:translateX(100%);transition:transform .45s cubic-bezier(.4,0,.2,1);
+      overflow:hidden;
+    ">
+      <div id="panel-img" style="width:100%;height:180px;background:#1e3a1e;position:relative;flex-shrink:0;overflow:hidden">
+        <img id="panel-photo" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,18,10,.8) 0%,transparent 50%)"></div>
+        <button id="panel-close" style="
+          position:absolute;top:1rem;right:1rem;
+          width:32px;height:32px;border-radius:50%;
+          background:rgba(10,18,10,.7);border:1px solid rgba(255,255,255,.15);
+          color:rgba(255,255,255,.7);font-size:1rem;cursor:pointer;
+          display:flex;align-items:center;justify-content:center;
+          transition:background .2s;
+        ">×</button>
+      </div>
+      <div style="padding:1.5rem;overflow-y:auto;flex:1">
+        <div id="panel-tag" style="
+          font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+          color:var(--gold-lt);margin-bottom:.6rem;font-family:'Cabinet Grotesk',sans-serif;
+        "></div>
+        <div id="panel-name" style="
+          font-family:'Cabinet Grotesk',sans-serif;
+          font-size:1.25rem;font-weight:800;color:#fff;
+          line-height:1.2;margin-bottom:.5rem;letter-spacing:-.01em;
+        "></div>
+        <div id="panel-addr" style="font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:1rem;font-family:'DM Sans',sans-serif"></div>
+        <div id="panel-desc" style="font-size:.83rem;line-height:1.75;color:rgba(255,255,255,.6);margin-bottom:1.2rem;font-family:'DM Sans',sans-serif"></div>
+        <div id="panel-rating" style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.2rem"></div>
+        <div id="panel-hours" style="font-size:.75rem;color:rgba(255,255,255,.35);line-height:1.8;font-family:'DM Sans',sans-serif;margin-bottom:1.5rem"></div>
+        <div style="display:flex;gap:.5rem">
+          <a id="panel-maps" href="#" target="_blank" rel="noopener" style="
+            flex:1;text-align:center;
+            font-size:.75rem;font-weight:700;letter-spacing:.04em;
+            padding:.6rem;border-radius:6px;
+            background:linear-gradient(135deg,var(--gold),var(--gold-lt));
+            color:#fff;text-decoration:none;
+            font-family:'DM Sans',sans-serif;
+            transition:opacity .2s;
+          ">Ver no Maps</a>
+          <a id="panel-site" href="#" target="_blank" rel="noopener" style="
+            flex:1;text-align:center;
+            font-size:.75rem;font-weight:700;letter-spacing:.04em;
+            padding:.6rem;border-radius:6px;
+            background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+            color:rgba(255,255,255,.7);text-decoration:none;
+            font-family:'DM Sans',sans-serif;
+            transition:background .2s;
+          ">Site oficial</a>
+        </div>
+      </div>
+      <!-- Photo strip -->
+      <div id="photo-strip" style="
+        display:flex;gap:4px;padding:4px;
+        background:rgba(0,0,0,.3);flex-shrink:0;overflow-x:auto;
+      "></div>
+    </div>
+
+    <!-- Legend -->
+    <div style="
+      position:absolute;bottom:1.2rem;left:1.2rem;z-index:5;
+      background:rgba(10,18,10,.85);backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,.08);border-radius:8px;
+      padding:.75rem 1rem;
+    ">
+      <div style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.6rem;font-family:'DM Sans',sans-serif">Categorias</div>
+      <div style="display:flex;flex-direction:column;gap:.35rem">
+        <div style="display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:rgba(255,255,255,.55);font-family:'DM Sans',sans-serif"><span style="width:10px;height:10px;border-radius:50%;background:#fff;flex-shrink:0"></span>Inovação</div>
+        <div style="display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:rgba(255,255,255,.55);font-family:'DM Sans',sans-serif"><span style="width:10px;height:10px;border-radius:50%;background:#fff;flex-shrink:0"></span>Educação</div>
+        <div style="display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:rgba(255,255,255,.55);font-family:'DM Sans',sans-serif"><span style="width:10px;height:10px;border-radius:50%;background:#fff;flex-shrink:0"></span>Mercado</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="cta" aria-labelledby="cta-heading">
+  <div class="cta-bg" role="img" aria-label="Pessoas jovens em ambiente de trabalho colaborativo"></div>
+  <div class="cta-overlay" aria-hidden="true"></div>
+  <div class="cta-inner">
+    <div>
+      <span class="cta-tag">Lista de espera aberta</span>
+      <h2 class="cta-h reveal" id="cta-heading">Lages precisa<br>de você <em>aqui.</em></h2>
+      <p class="cta-p reveal">Seja o primeiro a saber quando o Conexão Serra abrir. Acesso antecipado, vagas em primeira mão e conteúdo exclusivo sobre o mercado local.</p>
+    </div>
+    <div class="email-box reveal rd2">
+      <div class="eb-lbl">Lista de espera</div>
+      <div class="eb-title">Seja o primeiro a entrar.</div>
+      <div class="eb-sub">Acesso antecipado + vagas em primeira mão + conteúdo exclusivo sobre o mercado de Lages. Gratuito, sempre.</div>
+      <div class="eb-row">
+        <input type="email" placeholder="seu@email.com" id="emailInput" aria-label="Seu endereço de e-mail">
+        <button id="emailBtn">Entrar</button>
+      </div>
+      <div class="eb-note">Sem spam · Gratuito · Cancele quando quiser</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">
+    <div class="logo-mark" style="width:22px;height:22px;font-size:.6rem">CS</div>
+    Conexão Serra
+  </a>
+  <div class="footer-info">Lages · Serra Catarinense · SC · 2025 · Projeto jornalístico de impacto regional</div>
+  <ul class="footer-links">
+    <li><a href="#sobre">Projeto</a></li>
+    <li><a href="#doc">Documentário</a></li>
+    <li><a href="#cta">Contato</a></li>
+  </ul>
+</footer>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+'use strict';
+
+// ── Lucide icons
+lucide.createIcons();
+
+// ── Reduced motion check
+const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ── NAV scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// ── CURSOR — leve e direto, sem lerp
+if (window.matchMedia('(pointer: fine)').matches) {
+  const cur = document.getElementById('cur');
+  const ring = document.getElementById('cur-ring');
+
+  document.addEventListener('mousemove', e => {
+    const x = e.clientX + 'px', y = e.clientY + 'px';
+    cur.style.left  = x; cur.style.top  = y;
+    ring.style.left = x; ring.style.top = y;
+  }, { passive: true });
+
+  document.querySelectorAll('a, button, .feat, .cstep, .ep, .pq, .dep-card, .dch').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('on-link'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('on-link'));
+  });
+  document.querySelectorAll('img, .hero-bg, .cta-bg').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('on-img'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('on-img'));
+  });
+}
+
+// ── SCROLL REVEAL
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('shown'); });
+}, { threshold: .12 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+// ── COUNT UP
+const co = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target, target = parseInt(el.dataset.target);
+    let n = 0;
+    const iv = setInterval(() => {
+      n = Math.min(n + Math.ceil(target / 22), target);
+      el.textContent = n;
+      if (n >= target) clearInterval(iv);
+    }, 48);
+    co.unobserve(el);
+  });
+}, { threshold: .5 });
+document.querySelectorAll('.count').forEach(el => co.observe(el));
+
+// ── EMAIL FORM
+document.getElementById('emailBtn').addEventListener('click', () => {
+  const inp = document.getElementById('emailInput');
+  if (!inp.value.includes('@')) {
+    inp.style.borderColor = 'rgba(212,174,72,.8)';
+    inp.focus();
+    setTimeout(() => inp.style.borderColor = '', 1400);
+    return;
+  }
+  inp.value = '';
+  inp.placeholder = '✓ Você está na lista!';
+  inp.disabled = true;
+  inp.style.background = 'rgba(255,255,255,.2)';
+  document.getElementById('emailBtn').textContent = 'Pronto!';
+  document.getElementById('emailBtn').style.opacity = '.6';
+  document.getElementById('emailBtn').disabled = true;
+});
+
+// ── SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// ── @supports: scroll-driven fallback
+if (!CSS.supports('animation-timeline', 'scroll()')) {
+  // fallback: aplica peso máximo imediatamente
+  const h1 = document.querySelector('.hero-h1');
+  // no variable font fallback needed
+}
+</script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var s = document.createElement('script');
+  s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.onload = function() { buildMap(); };
+  document.head.appendChild(s);
+});
+
+function buildMap() {
+  var mapEl = document.getElementById('cs-map');
+  if (!mapEl) return;
+
+  var places = [
+    { name:'Orion Parque de Tecnologia', tag:'Inovação & Startups', color:'#d4ae48',
+      lat:-27.801966, lng:-50.3370905,
+      addr:'R. Heitor Villa Lobos, 525 — São Francisco, Lages',
+      desc:'Hub de inovação e startups de Lages. Celeiro de ideias — o principal espaço para quem quer empreender na Serra.',
+      rating:4.7, reviews:405, hours:'Seg–Sex: 8h–18h · Sáb: 8h–13h',
+      maps:'https://maps.google.com/?cid=12418197366430305281',
+      site:'http://www.orionparque.com/',
+      photos:['https://lh3.googleusercontent.com/place-photos/AJRVUZOzVuuEowDZ5EZKPnUDeGeIk-2QZOMsWbkiztluAGwAaDrW0xWq5KFfvFEvRM_uUMJctw7Df6HR6cBhigV9Q-0ViH7eFId7tTWyIZse4AX1GnZ6Fx1CYxVlTkpsfkyZWbJmg_dkKdWUh14R0g=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZNEK_dj0p_j9DXP8okBjAyqO_JnrSmuvv_45LiSP51vmJKTSZl8Xf9_rZLNjGBNUxtM7sEQiddlNqlp7LWuMDKED5ikbjPaPdmxD8cK2kcdfZA36eYyuC8z8gcDnKMQGn6XVWugW89pwvF3dUQ=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZMaqq1LPY_TrKlUDHOr0eC0odTVn0tTGzduiYvhbN9-2Dl9_0V20-_qfXH8-3btKK87DS-EThVaR4b3kQzqCV1AQ6DWxDAvEUXEQ_IXxAjdUceurX9B865WWWrqS0xZZyqbf-YhfhFUkFLAsbw=s800-w800-h600']
+    },
+    { name:'IFSC Campus Lages', tag:'Educação Técnica', color:'#4a9a6a',
+      lat:-27.8053113, lng:-50.3369272,
+      addr:'R. Heitor Villa Lobos, 225 — São Francisco, Lages',
+      desc:'Instituto Federal de Santa Catarina — formação técnica e tecnológica de excelência para jovens da Serra Catarinense.',
+      rating:4.8, reviews:121, hours:'Seg–Sex: 7h–22h30',
+      maps:'https://maps.google.com/?cid=4494705398905372081',
+      site:'https://ifsc.edu.br/lages',
+      photos:['https://lh3.googleusercontent.com/place-photos/AJRVUZMYbrs0YV74Elec24gZL24t6QjjQuNbDmO-mqSqwU4ErW8grxTxJ_cB_NfkZ_bWIYcnycB290ilC8rqGG_ZhVkXeGP-HdUnv61FhF1ttshWA6sC4mjuXDq7L6J9MSr56qfQALLGba8D27Ok0A=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZOzNju5tUjvV8ym_Os7XTfVxl3nOk7uMp2FcpNq4yxdCB7PDCOTiV3eZCWYWX-aq4HzPr0DRgJjA0E6SFeYVZDcSSN5-wLJ5-2s956NaVVHV0cxjjH1iXwJwji-XfTy4eCsc1kd18WTU77BkA=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZMNLFYz9yyOyzltd6N-t7TKMxy3tVcpH_xw3ggXLdP6hyKPF1Oa4MjQnTNPAWXTli_oshDSAS16sfSBnCgdh4f0-uLpzcIFk9j2ezmG2_nJPN0Uwu8kvDseyH0SGKCfaRTAwQyKpObMPDwlzQ=s800-w800-h600']
+    },
+    { name:'UNIPLAC', tag:'Universidade', color:'#4a9a6a',
+      lat:-27.823168, lng:-50.3168494,
+      addr:'Av. Mal. Castelo Branco, 170 — Universitário, Lages',
+      desc:'Universidade do Planalto Catarinense — a maior universidade de Lages, formando milhares de jovens anualmente.',
+      rating:4.5, reviews:454, hours:'Seg–Sex: 8h–22h · Sáb: 8h–12h',
+      maps:'https://maps.google.com/?cid=2237307022458404667',
+      site:'http://www.uniplaclages.edu.br/',
+      photos:['https://lh3.googleusercontent.com/place-photos/AJRVUZOcaLsBAa-wIVPG9EIVbcVrh_BQEwSgHegdcNVvyOImfIl1PqfiOyuHVZVb9plCRpAj6R-NGezd-ga8c3ARxsrURKpJNvFqWs8ArirJk1oq7pzWT7Qdw1ljHHoqi8sUwcnp6xl7-466_xyq9A=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZPEI6Jr3jxuxn3GTerAyWD3LbK029MxQhl9AtwqBS4n0K_et5CQXGSd7powdx3BilgfO6cg8vXAn80EguIAGkhKK2FWcaGk6I-LSyiy_4yqzn1gO4h8KCCwwnqyywAb4XbmFDKcjw6ylKFJfvp0depb6g=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZN4XO3QtijJcqq1RCZtMqDvLQ3kWaiHOZ_wR84xzE8vfz_dy-l6iq4N2Dofvr2L9qLVrtE8Q4DdQ1ugqLbWBkJ0b2ae4Iank_ktfdiavae7QnmWQlM7Jgj0I5mDIp5JWMZgNsOLgOi0xxn-YtU=s800-w800-h600']
+    },
+    { name:'UDESC Lages', tag:'Universidade Estadual', color:'#4a9a6a',
+      lat:-27.7927464, lng:-50.306694,
+      addr:'Av. Luiz de Camões, 2090 — Conta Dinheiro, Lages',
+      desc:'Universidade do Estado de SC — campus com estrutura sólida, pesquisa de qualidade e cursos altamente avaliados.',
+      rating:4.8, reviews:267, hours:'Seg–Sex: horário acadêmico',
+      maps:'https://maps.google.com/?cid=14308977919054063659',
+      site:'https://www.udesc.br/cav',
+      photos:['https://lh3.googleusercontent.com/place-photos/AJRVUZNbLWKbVu_8EwHd9Ubu8EZFwGCZy3sUj2oajBHdqsVOI42Gpqu0S9NeLXmoyRfpo65IcpIw6X2IJwheiehdC7HjcjQp2nbEHpa-v_N7dn8Z6_OGNOhIRUqP4LzgIvPY9XYyMtbi-dLysW5RyA=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZOarlgnL19OIv7bfVMQzK2K81unATDvJnQ9no_HVuYVQKaadT6YNf-65PGv_C-o3Cf7WdXIOOsiwZz6wyIeo8J7wW-vYHDrOntrZlofVAOFDrUq6Q3xZ1rzr32IWxLJteoa8J8IKz6PNA29pg=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZMA8Uci3Fd-LR5CWalmRS64Zuj70SRGqlL7926iw5okFfEjLZZ2ULOg0-gvrmazmqD8PsMHO0JccWFHJDzBPBnhy7MU-rcoLWUKdQEf5wGNTmjtXV65NRTAPKcc6VN15LFBfXsPKYBoUQC5=s800-w800-h600']
+    },
+    { name:'SENAI Lages', tag:'Educação Profissional', color:'#4a9a6a',
+      lat:-27.826048, lng:-50.3129928,
+      addr:'R. Archilau Batista do Amaral, 745 — Universitário, Lages',
+      desc:'Escola de educação profissional — uma das melhores estruturas de ensino técnico da Serra Catarinense.',
+      rating:4.8, reviews:109, hours:'Seg–Sex: 7h50–22h · Sáb: 8h–12h',
+      maps:'https://maps.google.com/?cid=86296361359080091',
+      site:'https://cursos.sesisenai.org.br/',
+      photos:['https://lh3.googleusercontent.com/place-photos/AJRVUZMvHoMqndz_NVIFJ1M0vxdXwNuk6YCIoRFj3WolTw3Ohg1Igz_CdSX1cTwRNot0P9HGm634YoI--vk90kKXxn19aTx766_jvLste_H_3FOoFCnAsxbLFKPglFHrVq9ihvqCqeVKt5CuMB6B730=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZOaMvNIPXg6R6go5OpSsbyan5tSPZhNOLO-NzpwVPxGZpmXyrJJGzeWcLIs8Auqr8iLRQCiH3WodRBR9lxobt4-_WYY4-xRwe-Bk5Pl_ZO4cvGjdIAS5H1jdNS22HQVQtNzyhlMKtYfFPNXLfIh30Pceg=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZO1RgrwCuPpjN6jdQVA4-nHhPDss4Lcl0ayKPgMQrA77HWjS_B393DdkyroqAO34pNZcn7jeJ0_cQlTx4Ig0w-Ha-8Xn23klX3LXuSb2ZUN8IMmzzMguqhnR7pMjDkVzGTHmFKsAkEw4rJl6BHFGQxj4Q=s800-w800-h600']
+    },
+    { name:'ACIL — Associação Empresarial', tag:'Mercado & Empresas', color:'#6a9ad4',
+      lat:-27.8119675, lng:-50.3318557,
+      addr:'Av. Belizário Ramos, 2276 — Centro, Lages',
+      desc:'Principal associação empresarial de Lages — conecta empreendedores, empresas e o mercado regional da Serra.',
+      rating:4.7, reviews:174, hours:'Seg–Sex: 8h–12h / 13h30–18h',
+      maps:'https://maps.google.com/?cid=3448564609474565076',
+      site:'http://www.acilages.com.br/',
+      photos:['https://lh3.googleusercontent.com/place-photos/AJRVUZNE7e076ZtKe3CzjnW5Y3XwevelQThiRt5kT4_wlBuRNbc8D1LxDhprtwYKJPi6Qtr1qp4TXJompKIDNu_OoHS9kgJGFpwTaKqwhTWYPNOvNgMCRfYnSqwzJywbCc7j9_Up1nWGOLuwAxWmmFU=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZOdpaQ4q37uwAmOsyjuDGBxIIM1-E5dKam7V1p7uGVN5eB7RzARrwbfIPVHGZA8gpGhzmnDghaYuK6pf2tL4359xF-hSn_mgTP5kwo06OumOM-ULqcyMV-m4oMJL3eqAXr7ysK-11_vGXTO-fM=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZMu4l5zCe0bX0e_t2SmYIKwXTP31VG6f8qq6DgWSQFuIo0fWYKWtwu_3-zW5z7h3ieyuRC5bDNqw1G1MuOvt1jpcMopWFHeGQS--8pQf5XPAnUtGA973L-pcqisNf-wLA5AZ5DSDsxlGN3g=s800-w800-h600']
+    },
+    { name:'SEBRAE Lages', tag:'Empreendedorismo', color:'#6a9ad4',
+      lat:-27.8158868, lng:-50.324837,
+      addr:'R. Aristiliano Ramos, 238 — Centro, Lages',
+      desc:'Apoio ao empreendedorismo — suporte e orientação para jovens que querem construir negócios na Serra Catarinense.',
+      rating:4.7, reviews:109, hours:'Seg–Sex: 8h–12h / 13h30–17h30',
+      maps:'https://maps.google.com/?cid=16653064514632509506',
+      site:'https://www.sebrae-sc.com.br/',
+      photos:['https://lh3.googleusercontent.com/place-photos/AJRVUZOSWnfDUlksx5UPdP0nChfrwiJYA3OTU_aJS9odHDDWhYdBYDuw9HLDesPPLT9j4V4koOHdik3PuIGYMK6CyYA2m6Tzymeaalotv2QO7QWwb8SGRDIkfyLAJ54iDvQruJiuiKwnVpbJxBCk=s800-w680-h382','https://lh3.googleusercontent.com/place-photos/AJRVUZMHoPKUPd4PVRA85JuCa-pXSvqLKMPi0nxrgxVeZIub_M5xCUbfi8mhDrpJNMGnWtAZtUqtx0W8GNIV_a7SQ58KOi8eb3mgFB_Ta4sVXY7tRGpDKcI9jCQXIeWzbDri1aNNdWVGtdB4VZ9HyFM=s800-w800-h600','https://lh3.googleusercontent.com/place-photos/AJRVUZN_8Ftd9FQJLrjnbchz2CeW5OHpguRAxJgoDXRqTwmIPtza6hb0U92qB2fuEWrHBHhJK0IgQWTPfLAStlUU1LvP3qhYVocDmMIPUpL76Q4W63b_FMuV4twpHAVg-kkNACzgYbFvwwN2Eqp84g=s800-w800-h600']
+    },
+  ];
+
+  var map = L.map('cs-map', {
+    center: [-27.812, -50.325],
+    zoom: 13,
+    zoomControl: false,
+    attributionControl: true,
+    scrollWheelZoom: false,
+  });
+
+  // Scroll zoom only when user clicks into the map
+  var mapWrap = document.getElementById('map-wrap');
+  var mapOverlay = document.createElement('div');
+  mapOverlay.style.cssText = [
+    'position:absolute',
+    'inset:0',
+    'z-index:2',
+    'cursor:pointer',
+    'display:flex',
+    'align-items:center',
+    'justify-content:center',
+    'background:transparent',
+    'transition:background .3s',
+  ].join(';');
+  var hint = document.createElement('div');
+  hint.textContent = 'Clique para interagir com o mapa';
+  hint.style.cssText = [
+    'background:rgba(10,18,10,.75)',
+    'color:rgba(255,255,255,.7)',
+    'font-family:\'DM Sans\',sans-serif',
+    'font-size:.75rem',
+    'font-weight:500',
+    'letter-spacing:.06em',
+    'padding:.5rem 1.1rem',
+    'border-radius:100px',
+    'border:1px solid rgba(255,255,255,.12)',
+    'pointer-events:none',
+    'opacity:0',
+    'transition:opacity .3s',
+  ].join(';');
+  mapOverlay.appendChild(hint);
+  mapWrap.appendChild(mapOverlay);
+
+  mapOverlay.addEventListener('click', function() {
+    map.scrollWheelZoom.enable();
+    mapOverlay.style.display = 'none';
+  });
+
+  mapWrap.addEventListener('mouseleave', function() {
+    map.scrollWheelZoom.disable();
+    mapOverlay.style.display = 'flex';
+    hint.style.opacity = '0';
+  });
+
+  mapOverlay.addEventListener('mouseenter', function() {
+    hint.style.opacity = '1';
+  });
+  mapOverlay.addEventListener('mouseleave', function() {
+    hint.style.opacity = '0';
+  });
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    crossOrigin: true
+  }).addTo(map);
+
+  L.control.zoom({ position: 'topright' }).addTo(map);
+
+  var panel      = document.getElementById('map-panel');
+  var panelPhoto = document.getElementById('panel-photo');
+  var panelTag   = document.getElementById('panel-tag');
+  var panelName  = document.getElementById('panel-name');
+  var panelAddr  = document.getElementById('panel-addr');
+  var panelDesc  = document.getElementById('panel-desc');
+  var panelRating = document.getElementById('panel-rating');
+  var panelHours = document.getElementById('panel-hours');
+  var panelMaps  = document.getElementById('panel-maps');
+  var panelSite  = document.getElementById('panel-site');
+  var photoStrip = document.getElementById('photo-strip');
+  var closeBtn   = document.getElementById('panel-close');
+  var activeMarker = null;
+
+  function makeIcon(color, active) {
+    var outer = active ? 48 : 36;
+    var inner = active ? 16 : 11;
+    var pulse = active ? 'animation:markerPulse 1.8s ease infinite;' : '';
+    var shadow = active
+      ? 'box-shadow:0 0 20px rgba(255,255,255,.5),0 0 40px rgba(255,255,255,.15);'
+      : 'box-shadow:0 0 8px rgba(255,255,255,.3);';
+    var html =
+      '<div style="width:'+outer+'px;height:'+outer+'px;border-radius:50%;' +
+      'background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.9);' +
+      'display:flex;align-items:center;justify-content:center;' +
+      shadow + pulse + 'transition:all .3s;">' +
+        '<div class="cs-marker-inner" style="width:'+inner+'px;height:'+inner+'px;border-radius:50%;' +
+        'background:#ffffff;box-shadow:0 0 6px rgba(255,255,255,.8);">' +
+        '</div>' +
+      '</div>';
+    return L.divIcon({
+      className: '',
+      html: html,
+      iconSize: [outer, outer],
+      iconAnchor: [outer/2, outer/2],
+    });
+  }
+
+  function starsHTML(rating) {
+    var full = Math.floor(rating);
+    var html = '';
+    for (var i = 0; i < full; i++) html += '★';
+    if (rating % 1 >= 0.5) html += '½';
+    return html;
+  }
+
+  function openPanel(p, marker) {
+    if (activeMarker && activeMarker._cs_place) {
+      activeMarker.setIcon(makeIcon(activeMarker._cs_place.color, false));
+    }
+    activeMarker = marker;
+    activeMarker._cs_place = p;
+    marker.setIcon(makeIcon(p.color, true));
+
+    map.flyTo([p.lat, p.lng], 15, { duration: 1.2, easeLinearity: 0.3 });
+
+    panelTag.textContent  = p.tag;
+    panelName.textContent = p.name;
+    panelAddr.textContent = p.addr;
+    panelDesc.textContent = p.desc;
+    panelHours.textContent = '🕐 ' + p.hours;
+    panelMaps.href = p.maps;
+    panelSite.href = p.site;
+
+    panelRating.innerHTML =
+      '<span style="color:#d4ae48;font-size:1rem">'+starsHTML(p.rating)+'</span>' +
+      '<span style="font-size:.82rem;font-weight:700;color:#fff;margin-left:.35rem">'+p.rating+'</span>' +
+      '<span style="font-size:.72rem;color:rgba(255,255,255,.35);margin-left:.3rem">('+p.reviews+' avaliações)</span>';
+
+    panelPhoto.style.opacity = '0';
+    panelPhoto.src = p.photos[0];
+    panelPhoto.onload = function() { panelPhoto.style.opacity = '1'; };
+
+    photoStrip.innerHTML = '';
+    p.photos.forEach(function(url, i) {
+      var img = document.createElement('img');
+      img.src = url;
+      img.style.cssText = 'width:72px;height:52px;object-fit:cover;border-radius:4px;cursor:pointer;opacity:'+(i===0?1:.5)+';transition:opacity .2s;flex-shrink:0';
+      img.addEventListener('click', function() {
+        panelPhoto.style.opacity = '0';
+        panelPhoto.src = url;
+        panelPhoto.onload = function() { panelPhoto.style.opacity = '1'; };
+        photoStrip.querySelectorAll('img').forEach(function(t){ t.style.opacity='.5'; });
+        img.style.opacity = '1';
+      });
+      photoStrip.appendChild(img);
+    });
+
+    panel.style.transform = 'translateX(0)';
+    setTimeout(function(){ map.invalidateSize(); }, 460);
+  }
+
+  places.forEach(function(p) {
+    var marker = L.marker([p.lat, p.lng], { icon: makeIcon(p.color, false) }).addTo(map);
+    marker.on('click', function() { openPanel(p, marker); });
+  });
+
+  closeBtn.addEventListener('click', function() {
+    panel.style.transform = 'translateX(100%)';
+    if (activeMarker && activeMarker._cs_place) {
+      activeMarker.setIcon(makeIcon(activeMarker._cs_place.color, false));
+      activeMarker = null;
+    }
+    map.flyTo([-27.812, -50.325], 13, { duration: 1, easeLinearity: 0.4 });
+    setTimeout(function(){ map.invalidateSize(); }, 500);
+  });
+}
+</script>
+</body>
