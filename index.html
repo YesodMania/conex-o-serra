@@ -465,6 +465,7 @@ nav.scrolled .nav-burger span { background: var(--green); }
 #map-panel { position: absolute; top: 0; right: 0; width: 350px; max-width: 85vw; height: 100%; background: rgba(10,18,10,.94); backdrop-filter: blur(20px); border-left: 1px solid rgba(255,255,255,.08); z-index: 10; display: flex; flex-direction: column; transform: translateX(100%); transition: transform .45s var(--ease); overflow: hidden; }
 #panel-img { width: 100%; height: 180px; background: var(--green); position: relative; flex-shrink: 0; overflow: hidden; }
 #panel-photo { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
+#panel-img.nophoto { height: 96px; }
 #panel-img .pimg-grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,18,10,.85) 0%, transparent 55%); }
 #panel-close { position: absolute; top: 1rem; right: 1rem; width: 34px; height: 34px; border-radius: 50%; background: rgba(10,18,10,.7); border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.8); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; line-height: 1; }
 #panel-close:hover { background: rgba(30,58,30,.95); }
@@ -1252,10 +1253,15 @@ function buildMap() {
     pDesc.textContent = p.desc; pHours.textContent = '🕐 ' + p.hours;
     pMaps.href = p.maps; pSite.href = p.site;
     pRating.innerHTML = '<span style="color:#d4ae48;font-size:1rem">'+starsHTML(p.rating)+'</span><span style="font-size:.82rem;font-weight:700;color:#fff;margin-left:.35rem">'+p.rating+'</span><span style="font-size:.72rem;color:rgba(255,255,255,.35);margin-left:.3rem">('+p.reviews+' avaliações)</span>';
-    pPhoto.style.opacity = '0'; pPhoto.src = p.photos[0]; pPhoto.onload = function(){ pPhoto.style.opacity='1'; };
+    var pImgBox = document.getElementById('panel-img');
+    pImgBox.classList.remove('nophoto'); strip.style.display = '';
+    pPhoto.style.opacity = '0'; pPhoto.onload = function(){ pPhoto.style.opacity='1'; };
+    pPhoto.onerror = function(){ pPhoto.style.opacity='0'; pImgBox.classList.add('nophoto'); };
+    pPhoto.src = p.photos[0];
     strip.innerHTML = '';
     p.photos.forEach(function(url, idx) {
       var t = document.createElement('img'); t.src = url; t.style.opacity = idx===0?1:.5;
+      t.onerror = function(){ t.remove(); if (!strip.children.length) strip.style.display = 'none'; };
       t.addEventListener('click', function() {
         pPhoto.style.opacity='0'; pPhoto.src=url; pPhoto.onload=function(){pPhoto.style.opacity='1';};
         strip.querySelectorAll('img').forEach(function(x){x.style.opacity='.5';}); t.style.opacity='1';
