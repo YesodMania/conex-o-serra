@@ -688,12 +688,23 @@ footer { padding: 3rem var(--pad-x) 2.5rem; background: var(--green); border-top
   background: var(--green) center / cover no-repeat url('https://img.youtube.com/vi/VHVI72h0dww/maxresdefault.jpg');
 }
 .pod-video {
-  position: absolute; top: 50%; left: 50%; z-index: -2;
-  width: 100%; height: 100%;
-  width: max(100cqw, 177.78cqh); height: max(56.25cqw, 100cqh);
-  transform: translate(-50%, -50%);
-  border: 0; pointer-events: none;
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%; object-fit: cover; border: 0;
 }
+.pod-sound {
+  position: absolute; right: var(--pad-x); bottom: 1.6rem; z-index: 2;
+  display: inline-flex; align-items: center; gap: .55rem; cursor: pointer;
+  padding: .65rem 1.1rem; border-radius: 100px;
+  background: rgba(15,20,15,.55); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.28); color: var(--white);
+  font: 600 .8rem 'DM Sans', sans-serif; letter-spacing: .04em;
+  transition: background .25s, border-color .25s;
+}
+.pod-sound:hover, .pod-sound:focus-visible { background: rgba(184,150,46,.85); border-color: var(--gold-hi); color: var(--ink); }
+.pod-sound svg { width: 18px; height: 18px; }
+.pod-sound .ico-on { display: none; }
+.pod-sound.on .ico-on { display: block; }
+.pod-sound.on .ico-off { display: none; }
 .pod-overlay {
   position: absolute; inset: 0; z-index: -1;
   background:
@@ -1015,7 +1026,7 @@ footer { padding: 3rem var(--pad-x) 2.5rem; background: var(--green); border-top
 
 <!-- PODCAST -->
 <section id="podcast" aria-labelledby="pod-heading">
-  <iframe class="pod-video" src="https://www.youtube-nocookie.com/embed/VHVI72h0dww?autoplay=1&amp;mute=1&amp;controls=0&amp;loop=1&amp;playlist=VHVI72h0dww&amp;playsinline=1&amp;modestbranding=1&amp;rel=0&amp;disablekb=1&amp;iv_load_policy=3&amp;fs=0" title="Vídeo de fundo do podcast" loading="lazy" allow="autoplay; encrypted-media" tabindex="-1" aria-hidden="true"></iframe>
+  <video class="pod-video" id="pod-video" src="video/podcast-trecho.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"></video>
   <div class="pod-overlay" aria-hidden="true"></div>
   <div class="pod-inner">
     <span class="s-tag s-tag-dim reveal" style="justify-content:center">Podcast</span>
@@ -1024,6 +1035,11 @@ footer { padding: 3rem var(--pad-x) 2.5rem; background: var(--green); border-top
     </h2>
     <p class="pod-hint reveal rd2">Abre no YouTube</p>
   </div>
+  <button type="button" class="pod-sound" id="pod-sound" aria-pressed="false" aria-label="Ativar o som do vídeo">
+    <svg class="ico-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/></svg>
+    <svg class="ico-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+    <span id="pod-sound-txt">Ativar som</span>
+  </button>
 </section>
 
 <!-- CTA -->
@@ -1284,6 +1300,26 @@ function buildMap() {
     setTimeout(function(){ map.invalidateSize(); }, 500);
   });
 }
+
+// ── Podcast: som sob demanda e pausa fora da tela
+(function() {
+  var v = document.getElementById('pod-video'), b = document.getElementById('pod-sound'), t = document.getElementById('pod-sound-txt');
+  if (!v || !b) return;
+  b.addEventListener('click', function() {
+    v.muted = !v.muted;
+    var on = !v.muted;
+    b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.setAttribute('aria-label', on ? 'Desativar o som do vídeo' : 'Ativar o som do vídeo');
+    t.textContent = on ? 'Desativar som' : 'Ativar som';
+    if (on) { v.currentTime = 0; }
+    v.play().catch(function(){});
+  });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function(es) {
+      es.forEach(function(e) { if (e.isIntersecting) { v.play().catch(function(){}); } else { v.pause(); } });
+    }, { threshold: .25 }).observe(v);
+  }
+})();
 </script>
 </body>
 </html>
