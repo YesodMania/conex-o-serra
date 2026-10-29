@@ -423,6 +423,8 @@ nav.scrolled .nav-burger span { background: var(--green); }
 .dep-quote { font-family: 'DM Sans', sans-serif; font-style: italic; font-weight: 400; font-size: 1rem; line-height: 1.7; color: var(--green); margin-bottom: 1.5rem; position: relative; z-index: 1; }
 .dep-author { display: flex; align-items: center; gap: .85rem; }
 .dep-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--green-soft), var(--gold-dim)); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Cabinet Grotesk', sans-serif; font-size: .95rem; font-weight: 800; color: var(--green-md); border: 2px dashed rgba(30,58,30,.15); }
+.dep-avatar.has-photo { width: 52px; height: 52px; border: 2px solid var(--gold-lt); overflow: hidden; background: var(--green-soft); }
+.dep-avatar.has-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; }
 .dep-name { font-size: .85rem; font-weight: 700; color: var(--green); letter-spacing: -.01em; }
 .dep-role { font-size: .72rem; font-weight: 400; color: var(--ink-35); margin-top: .12rem; }
 
@@ -885,15 +887,15 @@ footer { padding: 3rem var(--pad-x) 2.5rem; background: var(--green); border-top
       <span class="s-tag reveal">Os que ficaram</span>
       <h2 class="s-title reveal" id="dep-heading">Construíram carreira<br><em>aqui.</em></h2>
     </div>
-    <span class="ph-badge reveal" style="margin-bottom:.5rem">Depoimentos reais a coletar</span>
+    <span class="ph-badge reveal" style="margin-bottom:.5rem">Mais depoimentos a coletar</span>
   </div>
   <div class="dep-grid">
     <div class="dep-card reveal rd1">
       <div class="dep-mark" aria-hidden="true">"</div>
-      <div class="dep-quote">Espaço reservado para o depoimento real de um jovem que escolheu construir carreira em Lages.</div>
+      <div class="dep-quote">Se você se qualificar, investir no currículo e se fazer ser visto, certamente um gerente, um empregador, vai te enxergar.</div>
       <div class="dep-author">
-        <div class="dep-avatar" aria-hidden="true">?</div>
-        <div><div class="dep-name">Nome a definir</div><div class="dep-role">Curso · Instituição · Lages</div></div>
+        <div class="dep-avatar has-photo"><img src="images/handerson-souza.jpg" alt="Foto de Handerson Souza" width="52" height="52" loading="lazy"></div>
+        <div><div class="dep-name">Handerson Souza</div><div class="dep-role">Coordenador de conteúdo · Rádio Clube de Lages</div></div>
       </div>
     </div>
     <div class="dep-card reveal rd2">
